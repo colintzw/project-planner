@@ -1,8 +1,8 @@
+# ignore my testing notebook
+**/tester.ipynb
+
 # ignore secrets
 *.secret
-
-# ignore uv lock
-uv.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
