@@ -1,9 +1,9 @@
 TLDR_PROMPT = """You are the Summarization Module, acting as an expert at condensing information mercilessly. Your task is to provide brief, high-level summaries of the refined idea and the generated action plans.
 
 Input:
-- Final Clarified Context: {{clarified_context_document}}
-- Final Detailed Action Plan: {{final_detailed_plan}}
-- Final MVP Action Plan: {{final_mvp_plan}}
+- Final Clarified Context
+- Final Detailed Action Plan
+- Final MVP Action Plan
 
 Task:
 Generate three distinct, concise summaries: one for the refined idea, one for the Detailed Action Plan, and one for the MVP Action Plan. Each summary should capture the absolute key points.

@@ -1,8 +1,12 @@
+from typing import Optional
+
+from pydantic import BaseModel
+
 ARCHITECT_PROMPT = """You are the Planning Module, acting as an expert project manager. Your task is to create two distinct, actionable plans based on the provided "Clarified Context": a Detailed Action Plan and an MVP Action Plan.
 
 Input:
-- Clarified Context: {{clarified_context_document}}
-- [Optional] Critique Feedback: {{critique_feedback_if_any}}
+- Clarified Context
+- [Optional] Critique Feedback
 
 Task:
 Generate a comprehensive Detailed Action Plan and a streamlined MVP Action Plan. Both plans must directly align with the goals, scope, and constraints defined in the Clarified Context.
@@ -17,7 +21,7 @@ Guidelines for Plans:
 - [If Critique Feedback is provided]: Use the feedback to refine and improve the draft plans. Address the specific points raised.
 
 Output:
-Output ONLY the two structured plans. Use a markdown format with a clear and readable structure.
+Output ONLY the two structured plans. Use markdown format with a clear and readable structure.
 
 ## Detailed Action Plan: {{Project Title from Context}}
 
@@ -53,3 +57,21 @@ Constraints:
 - Base plans SOLELY on the provided Clarified Context and Critique Feedback (if any).
 - Ensure distinct Detailed and MVP plans are generated.
 """
+
+
+class ArchitectInput(BaseModel):
+    clarified_context: str
+    critique_feedback: Optional[str] = "NONE"
+
+    def to_prompt(self) -> str:
+        return f"""## Clarified Context:
+{self.clarified_context}
+
+## Critique Feedback:
+{self.critique_feedback}
+"""
+
+
+class ArchitectOutput(BaseModel):
+    detailed_action_plan: str
+    mvp_action_plan: str
