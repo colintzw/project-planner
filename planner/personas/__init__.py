@@ -1,12 +1,13 @@
 from typing import Dict, Optional
+
 from pydantic import BaseModel
 from pydantic_ai import Agent
-from utils import initialize_model
 
 from .architect import ARCHITECT_PROMPT, ArchitectInput, ArchitectOutput
-from .investigator import INVESTIGATOR_PROMPT
+from .investigator import INVESTIGATOR_PROMPT, InvestigatorInput
 from .qahell import QA_PROMPT, QAInput
-from .tldr import TLDR_PROMPT
+from .tldr import TLDR_PROMPT, TLDRInput, TLDROutput
+from .utils import initialize_model
 
 _DEFAULT_MODEL_NAME = "qwen/qwen3-4b:free"
 
@@ -31,6 +32,7 @@ def setup_agents(model_names: ModelNames) -> Dict:
         "architect": Agent(
             name="architect",
             system_prompt=ARCHITECT_PROMPT,
+            output_type=ArchitectOutput,
             model=model_names.architect,
         ),
         "qa": Agent(
@@ -42,6 +44,7 @@ def setup_agents(model_names: ModelNames) -> Dict:
             name="tldr",
             system_prompt=TLDR_PROMPT,
             model=model_names.tldr,
+            output_type=TLDROutput,
         ),
     }
     return agents

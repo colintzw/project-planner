@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+
 TLDR_PROMPT = """You are the Summarization Module, acting as an expert at condensing information mercilessly. Your task is to provide brief, high-level summaries of the refined idea and the generated action plans.
 
 Input:
@@ -33,3 +35,25 @@ Constraints:
 - Do NOT generate questions or plans.
 - ONLY provide the three summaries.
 - Keep summaries extremely brief and high-level."""
+
+
+class TLDRInput(BaseModel):
+    clarified_context: str
+    detailed_action_plan: str
+    mvp_action_plan: str
+
+    def to_prompt(self) -> str:
+        return f"""## Final Clarified Context
+{self.clarified_context}
+
+## Final Detailed Action Plan
+{self.detailed_action_plan}
+
+## Final MVP Action Plan
+{self.mvp_action_plan}
+"""
+    
+class TLDROutput(BaseModel):
+    refined_idea_summary: str
+    detailed_plan_summary: str
+    mvp_plan_summary: str
