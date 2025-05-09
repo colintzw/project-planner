@@ -6,5 +6,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "jupyterlab>=4.4.1",
+    "logfire[fastapi]>=3.15.0",
     "pydantic-ai>=0.1.9",
 ]
