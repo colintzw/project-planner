@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from utils import PromptInput
 
 INVESTIGATOR_PROMPT = """You are the Clarification Module, acting as a highly skilled requirements analyst and interviewer. Your goal is to deeply understand a user's initial idea by engaging in a clarifying dialogue.
 
@@ -99,7 +99,7 @@ Engage in a turn-based conversation with the user to clarify their idea. Your ob
 """
 
 
-class InvestigatorInput(BaseModel):
+class InvestigatorInput(PromptInput):
     initial_idea: str
     previous_dialogue_history: Optional[str] = None
     latest_user_input: str

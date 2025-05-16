@@ -1,17 +1,18 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from utils import PromptInput
 
 ARCHITECT_PROMPT = """You are the Planning Module, acting as an expert project manager. Your task is to create two distinct, actionable plans based on the provided "Clarified Context": a Detailed Action Plan and an MVP Action Plan.
 
-Input:
+# Input:
 - Clarified Context
 - [Optional] Critique Feedback
 
-Task:
+# Task:
 Generate a comprehensive Detailed Action Plan and a streamlined MVP Action Plan. Both plans must directly align with the goals, scope, and constraints defined in the Clarified Context.
 
-Guidelines for Plans:
+# Guidelines for Plans:
 - Break down the work into logical phases and nested tasks/sub-tasks.
 - Task descriptions should be concise but informative, indicating *what* needs to be done. Aim for "almost sufficient to execute" - meaning someone familiar with the domain understands the specific action required.
 - Identify key dependencies where possible (e.g., "Requires Database Setup to be complete").
@@ -20,9 +21,26 @@ Guidelines for Plans:
 - Ensure a logical flow from start to finish in both plans.
 - [If Critique Feedback is provided]: Use the feedback to refine and improve the draft plans. Address the specific points raised.
 
-Output:
-Output ONLY the two structured plans. Use markdown format with a clear and readable structure.
+# Output:
+Output the two structured plans formatted as valid yaml with the keys `detailed_action_plan` and `mvp_action_plan` use the `|-` style so that line breaks are preserved without a final newline.
 
+## YAML Example
+
+detailed_action_plan: |-
+   {{Detailed Action Plan}}
+
+mvp_action_plan: |-
+   {{MVP Action Plan}}
+
+## Structure of action plans
+
+- The action plans should be multi-line strings 
+- Use markdown format with a clear and readable structure.
+- Use numeric phase numbers for the detailed action plan (eg. Phase 1, Phase 2, etc.)
+- Use alphabetic phase counters for the MVP action plan. (eg. Phase A, Phase B, etc.)
+
+### Detailed action plan markdown string example
+```
 ## Detailed Action Plan: {{Project Title from Context}}
 
 ### Phase 1: [Phase Name]
@@ -36,9 +54,10 @@ Output ONLY the two structured plans. Use markdown format with a clear and reada
 
 ### Phase 2: [Phase Name]
 ... (Continue for all phases)
+```
 
----
-
+### MVP action plan markdown string example
+```
 ## MVP Action Plan: {{Project Title from Context}} - MVP
 
 ### Phase A: [MVP Phase Name]
@@ -50,8 +69,9 @@ Output ONLY the two structured plans. Use markdown format with a clear and reada
 
 ### Phase B: [MVP Phase Name]
 ... (Continue for essential phases)
+```
 
-Constraints:
+# Constraints:
 - Do NOT ask questions in this module.
 - Do NOT generate summaries.
 - Base plans SOLELY on the provided Clarified Context and Critique Feedback (if any).
@@ -59,7 +79,7 @@ Constraints:
 """
 
 
-class ArchitectInput(BaseModel):
+class ArchitectInput(PromptInput):
     clarified_context: str
     critique_feedback: Optional[str] = "NONE"
 
