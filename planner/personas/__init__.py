@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 
+import logfire
 from pydantic import BaseModel
 from pydantic_ai import Agent
 
@@ -7,9 +8,13 @@ from .architect import ARCHITECT_PROMPT, ArchitectInput, ArchitectOutput
 from .investigator import INVESTIGATOR_PROMPT, InvestigatorInput
 from .qahell import QA_PROMPT, QAInput
 from .tldr import TLDR_PROMPT, TLDRInput, TLDROutput
-from .utils import initialize_model
+from .utils import _KEY_CONFIG, initialize_model
 
 _DEFAULT_MODEL_NAME = "qwen/qwen3-4b:free"
+
+
+def setup_logfire():
+    logfire.configure(token=_KEY_CONFIG["logfire"])
 
 
 class ModelNames(BaseModel):
@@ -33,17 +38,17 @@ def setup_agents(model_names: ModelNames) -> Dict:
             name="architect",
             system_prompt=ARCHITECT_PROMPT,
             output_type=ArchitectOutput,
-            model=model_names.architect,
+            model=initialize_model(model_names.architect),
         ),
         "qa": Agent(
             name="qa",
             system_prompt=QA_PROMPT,
-            model=model_names.qa,
+            model=initialize_model(model_names.qa),
         ),
         "tldr": Agent(
             name="tldr",
             system_prompt=TLDR_PROMPT,
-            model=model_names.tldr,
+            model=initialize_model(model_names.tldr),
             output_type=TLDROutput,
         ),
     }

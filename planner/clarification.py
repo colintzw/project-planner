@@ -20,8 +20,6 @@ class Clarification:
     def __init__(self, investigator_agent: Agent):
         """
         Initializes the ClarificationPhase with a reference to the planner.
-
-        :param planner: The planner instance that this phase belongs to.
         """
         self.agent = investigator_agent
         self.agent.instrument = True  # opentelemetry instrumentation on.
@@ -30,9 +28,6 @@ class Clarification:
     def _build_input(self, user_prompt: str) -> InvestigatorInput:
         """
         Builds the input for the agent based on the user's input.
-
-        :param user_input: The user's input to be processed.
-        :return: An instance of InvestigatorInput containing the user's input.
         """
         if self.last_input is None:
             return InvestigatorInput(
@@ -47,23 +42,21 @@ class Clarification:
             latest_user_input=user_prompt,
         )
 
-    def _append_response(self, curr_input: InvestigatorInput, response: str) -> None:
+    def _update_last_input(self, curr_input: InvestigatorInput, response: str) -> None:
         """
-        Appends the agent's response to the dialogue history.
-
-        :param response: The response from the agent.
+        Appends the agent's response to the dialogue history. and updates the last input
         """
         prefix = "\n\nNext interaction"
         if self.last_input is None:
-            self.last_input = curr_input
             prefix = "Initial interaction"
 
-        self.last_input.previous_dialogue_history += f"""{prefix}:
+        curr_input.previous_dialogue_history += f"""{prefix}:
 User: 
-{self.last_input.latest_user_input}
+{curr_input.latest_user_input}
 Assistant: 
 {response}
 """
+        self.last_input = curr_input
 
     async def accumulate_streams_to_queues(
         self, user_prompt: str, queues: List[asyncio.Queue]
@@ -82,4 +75,4 @@ Assistant:
 
             await asyncio.gather(*(queue.put(QUEUE_END_SIGNAL) for queue in queues))
 
-        self._append_response(curr_input, response)
+        self._update_last_input(curr_input, response)
